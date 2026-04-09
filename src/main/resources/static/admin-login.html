@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smartplace – Admin Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0b0f1a; --surface: #111827; --card: #151e2e; --border: #1f2d42;
+      --accent: #3b82f6; --accent2: #06b6d4; --green: #22c55e; --red: #ef4444;
+      --text: #e2e8f0; --muted: #64748b;
+    }
+    body {
+      font-family: 'Sora', sans-serif; background: var(--bg); color: var(--text);
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 24px;
+    }
+    body::before {
+      content: ''; position: fixed; border-radius: 50%; filter: blur(80px);
+      z-index: 0; pointer-events: none;
+      width: 400px; height: 400px; background: rgba(239,68,68,0.05); top: -80px; right: -80px;
+    }
+
+    .logo {
+      font-size: 1.6rem; font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 8px; position: relative; z-index: 1;
+    }
+    .logo span { font-weight: 300; }
+    .admin-badge {
+      background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
+      color: var(--red); font-size: 0.72rem; font-weight: 600; letter-spacing: 1px;
+      text-transform: uppercase; padding: 3px 12px; border-radius: 20px;
+      margin-bottom: 28px; position: relative; z-index: 1;
+    }
+    .auth-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 40px 36px; width: 100%; max-width: 400px; position: relative; z-index: 1;
+    }
+    .card-title {
+      font-size: 1.1rem; font-weight: 700; margin-bottom: 24px; color: var(--text);
+    }
+    label {
+      display: block; font-size: 0.78rem; font-weight: 600; color: var(--muted);
+      letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px;
+    }
+    input[type="email"], input[type="password"] {
+      width: 100%; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 9px; padding: 12px 14px; color: var(--text);
+      font-family: 'Sora', sans-serif; font-size: 0.9rem; margin-bottom: 18px;
+      transition: border-color 0.2s; outline: none;
+    }
+    input:focus { border-color: var(--accent); }
+
+    .btn-login {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, #ef4444, #f97316);
+      border: none; border-radius: 9px; color: white; font-family: 'Sora', sans-serif;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer; margin-top: 4px;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-login:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-login:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .msg { margin-top: 14px; padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; display: none; }
+    .msg.success { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); color: var(--green); }
+    .msg.error   { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: var(--red); }
+
+    .back-link {
+      text-align: center; margin-top: 16px; font-size: 0.78rem;
+      color: var(--muted); position: relative; z-index: 1;
+    }
+    .back-link a { color: var(--accent); text-decoration: none; }
+    .back-link a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<div class="logo">Smart<span>place</span></div>
+<div class="admin-badge">🔒 Admin Access</div>
+
+<div class="auth-card">
+  <div class="card-title">Admin Login</div>
+
+  <label>Admin Email</label>
+  <input type="email" id="adminEmail" placeholder="admin@smartplace.com"/>
+  <label>Password</label>
+  <input type="password" id="adminPassword" placeholder="••••••••"/>
+  <button class="btn-login" id="loginBtn" onclick="handleAdminLogin()">Login as Admin →</button>
+  <div class="msg" id="msg"></div>
+</div>
+
+<div class="back-link">Not an admin? <a href="login.html">← User Login</a></div>
+
+<script>
+  // If already logged in as admin, skip
+  if (localStorage.getItem('adminEmail')) {
+    window.location.href = 'admin-dashboard.html';
+  }
+
+  async function handleAdminLogin() {
+    const email    = document.getElementById('adminEmail').value.trim();
+    const password = document.getElementById('adminPassword').value.trim();
+
+    if (!email || !password) {
+      showMsg('error', 'Please enter email and password.');
+      return;
+    }
+
+    const btn = document.getElementById('loginBtn');
+    btn.disabled = true;
+    btn.textContent = 'Logging in…';
+
+    try {
+      const res  = await fetch('/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+
+      if (!data.success) {
+        showMsg('error', data.message || 'Login failed.');
+      } else {
+        localStorage.setItem('adminEmail', email);   // Mark as admin
+        showMsg('success', 'Login successful! Redirecting…');
+        setTimeout(() => window.location.href = 'admin-dashboard.html', 1000);
+      }
+    } catch (err) {
+      showMsg('error', 'Cannot reach server. Is Spring Boot running?');
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Login as Admin →';
+  }
+
+  function showMsg(type, text) {
+    const el = document.getElementById('msg');
+    el.className = 'msg ' + type;
+    el.textContent = text;
+    el.style.display = 'block';
+  }
+</script>
+</body>
+</html>

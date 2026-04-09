@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smartplace – Admin Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0b0f1a; --surface: #111827; --card: #151e2e; --border: #1f2d42;
+      --accent: #3b82f6; --accent2: #06b6d4; --green: #22c55e;
+      --yellow: #f59e0b; --red: #ef4444; --text: #e2e8f0; --muted: #64748b; --radius: 14px;
+    }
+    body { font-family: 'Sora', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ─── NAVBAR ─── */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 40px; border-bottom: 1px solid var(--border);
+      background: rgba(11,15,26,0.95); backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo {
+      font-size: 1.4rem; font-weight: 700; letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .logo span { font-weight: 300; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .admin-pill {
+      background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
+      color: var(--red); font-size: 0.72rem; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; padding: 4px 12px; border-radius: 20px;
+    }
+    .btn-logout {
+      background: transparent; border: 1px solid var(--border); color: var(--muted);
+      padding: 6px 14px; border-radius: 8px; cursor: pointer; font-size: 0.8rem;
+      transition: all 0.2s; font-family: 'Sora', sans-serif;
+    }
+    .btn-logout:hover { border-color: var(--red); color: var(--red); }
+
+    /* ─── LAYOUT ─── */
+    .page { max-width: 1200px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    .page-header { margin-bottom: 40px; }
+    .page-header h1 { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
+    .page-header p  { color: var(--muted); font-size: 0.9rem; }
+
+    /* ─── TABS ─── */
+    .tab-bar {
+      display: flex; gap: 4px; background: var(--surface);
+      border-radius: 12px; padding: 5px; margin-bottom: 32px;
+      width: fit-content;
+    }
+    .tab {
+      padding: 9px 22px; border: none; border-radius: 9px; background: transparent;
+      color: var(--muted); font-family: 'Sora', sans-serif; font-size: 0.88rem;
+      font-weight: 500; cursor: pointer; transition: all 0.2s;
+    }
+    .tab.active { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+
+    /* ─── PANEL ─── */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ─── TWO-COL LAYOUT ─── */
+    .two-col { display: grid; grid-template-columns: 380px 1fr; gap: 24px; align-items: start; }
+    @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* ─── FORM CARD ─── */
+    .form-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 28px; position: sticky; top: 90px;
+    }
+    .form-card h2 {
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--accent2); margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+    }
+    label {
+      display: block; font-size: 0.75rem; font-weight: 600; color: var(--muted);
+      letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px;
+    }
+    input[type="text"], input[type="url"], textarea {
+      width: 100%; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 9px; padding: 11px 13px; color: var(--text);
+      font-family: 'Sora', sans-serif; font-size: 0.88rem; margin-bottom: 16px;
+      transition: border-color 0.2s; outline: none; resize: vertical;
+    }
+    input:focus, textarea:focus { border-color: var(--accent); }
+    textarea { min-height: 100px; }
+
+    .btn-add {
+      width: 100%; padding: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none; border-radius: 9px; color: white; font-family: 'Sora', sans-serif;
+      font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-add:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-add:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .form-msg {
+      margin-top: 12px; padding: 9px 13px; border-radius: 8px; font-size: 0.82rem; display: none;
+    }
+    .form-msg.success { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); color: var(--green); }
+    .form-msg.error   { background: rgba(239,68,68,0.1);  border: 1px solid rgba(239,68,68,0.3);  color: var(--red); }
+
+    /* ─── LIST CARD ─── */
+    .list-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .list-header {
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .list-header h2 {
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .count-badge {
+      background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25);
+      color: var(--accent); font-size: 0.75rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 99px; font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ─── LIST ITEM ─── */
+    .list-item {
+      padding: 18px 24px; border-bottom: 1px solid var(--border);
+      display: flex; gap: 16px; align-items: flex-start;
+      transition: background 0.15s;
+    }
+    .list-item:last-child { border-bottom: none; }
+    .list-item:hover { background: rgba(255,255,255,0.02); }
+
+    .item-body { flex: 1; min-width: 0; }
+    .item-name { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .item-meta { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+    .item-badge {
+      display: inline-block; margin-top: 6px;
+      background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25);
+      color: var(--green); font-size: 0.72rem; font-weight: 600;
+      padding: 2px 9px; border-radius: 99px; font-family: 'JetBrains Mono', monospace;
+    }
+    .item-link {
+      display: inline-block; margin-top: 6px;
+      background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2);
+      color: var(--accent); font-size: 0.72rem; font-weight: 600;
+      padding: 2px 9px; border-radius: 99px; font-family: 'JetBrains Mono', monospace;
+      text-decoration: none; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+
+    .btn-delete {
+      background: transparent; border: 1px solid var(--border); color: var(--muted);
+      padding: 6px 12px; border-radius: 7px; cursor: pointer; font-size: 0.78rem;
+      font-family: 'Sora', sans-serif; transition: all 0.2s; flex-shrink: 0;
+    }
+    .btn-delete:hover { border-color: var(--red); color: var(--red); background: rgba(239,68,68,0.05); }
+
+    /* ─── EMPTY / LOADING ─── */
+    .empty-state { padding: 48px 20px; text-align: center; color: var(--muted); font-size: 0.9rem; }
+    .spinner {
+      width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent);
+      border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 14px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── STATS ROW ─── */
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .stat-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 20px 22px;
+    }
+    .stat-label { font-size: 0.72rem; font-weight: 600; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+    .stat-num { font-size: 2rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+
+    @media (max-width: 600px) {
+      nav { padding: 14px 16px; }
+      .page { padding: 24px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAVBAR ─── -->
+<nav>
+  <div class="logo">Smart<span>place</span></div>
+  <div class="nav-right">
+    <span class="admin-pill">🔒 Admin</span>
+    <span id="adminEmailDisplay" style="font-size:0.82rem; color:var(--muted);"></span>
+    <button class="btn-logout" onclick="adminLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- ─── PAGE ─── -->
+<div class="page">
+
+  <div class="page-header">
+    <h1>Admin Dashboard</h1>
+    <p>Manage companies and courses listed on Smartplace.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Companies</div>
+      <div class="stat-num" id="statCompanies" style="color:var(--accent);">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Courses</div>
+      <div class="stat-num" id="statCourses" style="color:var(--accent2);">—</div>
+    </div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <button class="tab active" onclick="switchTab('companies')">🏢 Companies</button>
+    <button class="tab"        onclick="switchTab('courses')">🎓 Courses</button>
+  </div>
+
+  <!-- ═══════════ COMPANIES PANEL ═══════════ -->
+  <div class="panel active" id="panel-companies">
+    <div class="two-col">
+
+      <!-- ADD FORM -->
+      <div class="form-card">
+        <h2>➕ Add Company</h2>
+
+        <label>Company Name</label>
+        <input type="text" id="cName" placeholder="e.g. Google"/>
+
+        <label>Description</label>
+        <textarea id="cDesc" placeholder="What does this company do?"></textarea>
+
+        <label>Package Offered</label>
+        <input type="text" id="cPkg" placeholder="e.g. 8 LPA – 20 LPA"/>
+
+        <label>Apply Link (URL)</label>
+        <input type="url" id="cLink" placeholder="https://careers.company.com"/>
+
+        <button class="btn-add" id="addCompanyBtn" onclick="addCompany()">Add Company →</button>
+        <div class="form-msg" id="companyMsg"></div>
+      </div>
+
+      <!-- LIST -->
+      <div class="list-card">
+        <div class="list-header">
+          <h2>All Companies</h2>
+          <span class="count-badge" id="companyCount">0</span>
+        </div>
+        <div id="companyList">
+          <div class="empty-state"><div class="spinner"></div><p>Loading…</p></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════ COURSES PANEL ═══════════ -->
+  <div class="panel" id="panel-courses">
+    <div class="two-col">
+
+      <!-- ADD FORM -->
+      <div class="form-card">
+        <h2>➕ Add Course</h2>
+
+        <label>Course Name</label>
+        <input type="text" id="coName" placeholder="e.g. Java Full Stack"/>
+
+        <label>Description</label>
+        <textarea id="coDesc" placeholder="What will students learn?"></textarea>
+
+        <label>Course Link (URL)</label>
+        <input type="url" id="coLink" placeholder="https://udemy.com/course/..."/>
+
+        <button class="btn-add" id="addCourseBtn" onclick="addCourse()">Add Course →</button>
+        <div class="form-msg" id="courseMsg"></div>
+      </div>
+
+      <!-- LIST -->
+      <div class="list-card">
+        <div class="list-header">
+          <h2>All Courses</h2>
+          <span class="count-badge" id="courseCount">0</span>
+        </div>
+        <div id="courseList">
+          <div class="empty-state"><div class="spinner"></div><p>Loading…</p></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+  // ─── AUTH CHECK ───────────────────────────────────────────────
+  const adminEmail = localStorage.getItem('adminEmail');
+  if (!adminEmail) {
+    window.location.href = 'admin-login.html';
+  }
+  document.getElementById('adminEmailDisplay').textContent = adminEmail;
+
+  function adminLogout() {
+    localStorage.removeItem('adminEmail');
+    window.location.href = 'admin-login.html';
+  }
+
+  // ─── TAB SWITCHING ────────────────────────────────────────────
+  function switchTab(name) {
+    // Show/hide panels
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+
+    // Update tab button styles
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      t.classList.toggle('active', (i === 0 && name === 'companies') || (i === 1 && name === 'courses'));
+    });
+  }
+
+  // ─── SHOW FORM MESSAGE ────────────────────────────────────────
+  function showMsg(id, type, text) {
+    const el = document.getElementById(id);
+    el.className = 'form-msg ' + type;
+    el.textContent = text;
+    el.style.display = 'block';
+    // Auto-hide after 3 seconds
+    setTimeout(() => { el.style.display = 'none'; }, 3000);
+  }
+
+  // ══════════════════════════════════════════
+  //  COMPANIES
+  // ══════════════════════════════════════════
+
+  async function loadCompanies() {
+    const list = document.getElementById('companyList');
+    try {
+      const res  = await fetch('/companies');
+      const data = await res.json();
+
+      // Update stat + count badge
+      document.getElementById('statCompanies').textContent = data.length;
+      document.getElementById('companyCount').textContent  = data.length;
+
+      if (data.length === 0) {
+        list.innerHTML = '<div class="empty-state">No companies yet. Add one using the form!</div>';
+        return;
+      }
+
+      list.innerHTML = data.map(c => `
+        <div class="list-item" id="company-row-${c.id}">
+          <div class="item-body">
+            <div class="item-name">${c.name}</div>
+            <div class="item-meta">${c.description}</div>
+            <span class="item-badge">📦 ${c.packageOffered}</span>
+            <a class="item-link" href="${c.applyLink}" target="_blank" rel="noopener">
+              🔗 ${c.applyLink}
+            </a>
+          </div>
+          <button class="btn-delete" onclick="deleteCompany(${c.id})">🗑 Delete</button>
+        </div>
+      `).join('');
+
+    } catch (err) {
+      list.innerHTML = '<div class="empty-state">⚠️ Could not load companies. Is the server running?</div>';
+    }
+  }
+
+  async function addCompany() {
+    const name = document.getElementById('cName').value.trim();
+    const desc = document.getElementById('cDesc').value.trim();
+    const pkg  = document.getElementById('cPkg').value.trim();
+    const link = document.getElementById('cLink').value.trim();
+
+    if (!name || !desc || !pkg || !link) {
+      showMsg('companyMsg', 'error', 'Please fill in all fields.');
+      return;
+    }
+
+    const btn = document.getElementById('addCompanyBtn');
+    btn.disabled = true;
+    btn.textContent = 'Adding…';
+
+    try {
+      const res = await fetch('/companies', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, description: desc, packageOffered: pkg, applyLink: link })
+      });
+      const saved = await res.json();
+
+      if (saved.id) {
+        // Clear form
+        document.getElementById('cName').value = '';
+        document.getElementById('cDesc').value = '';
+        document.getElementById('cPkg').value  = '';
+        document.getElementById('cLink').value = '';
+        showMsg('companyMsg', 'success', `✅ "${saved.name}" added!`);
+        loadCompanies();   // Refresh list
+      } else {
+        showMsg('companyMsg', 'error', 'Something went wrong. Try again.');
+      }
+    } catch (err) {
+      showMsg('companyMsg', 'error', 'Cannot reach server.');
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Add Company →';
+  }
+
+  async function deleteCompany(id) {
+    if (!confirm('Delete this company? This cannot be undone.')) return;
+
+    try {
+      await fetch(`/companies/${id}`, { method: 'DELETE' });
+      // Remove row instantly from DOM (no need to reload full list)
+      const row = document.getElementById('company-row-' + id);
+      if (row) row.remove();
+      loadCompanies();   // Refresh to update count
+    } catch (err) {
+      alert('Could not delete. Is the server running?');
+    }
+  }
+
+  // ══════════════════════════════════════════
+  //  COURSES
+  // ══════════════════════════════════════════
+
+  async function loadCourses() {
+    const list = document.getElementById('courseList');
+    try {
+      const res  = await fetch('/courses');
+      const data = await res.json();
+
+      document.getElementById('statCourses').textContent = data.length;
+      document.getElementById('courseCount').textContent  = data.length;
+
+      if (data.length === 0) {
+        list.innerHTML = '<div class="empty-state">No courses yet. Add one using the form!</div>';
+        return;
+      }
+
+      list.innerHTML = data.map(c => `
+        <div class="list-item" id="course-row-${c.id}">
+          <div class="item-body">
+            <div class="item-name">${c.name}</div>
+            <div class="item-meta">${c.description}</div>
+            <a class="item-link" href="${c.link}" target="_blank" rel="noopener">
+              🔗 ${c.link}
+            </a>
+          </div>
+          <button class="btn-delete" onclick="deleteCourse(${c.id})">🗑 Delete</button>
+        </div>
+      `).join('');
+
+    } catch (err) {
+      list.innerHTML = '<div class="empty-state">⚠️ Could not load courses. Is the server running?</div>';
+    }
+  }
+
+  async function addCourse() {
+    const name = document.getElementById('coName').value.trim();
+    const desc = document.getElementById('coDesc').value.trim();
+    const link = document.getElementById('coLink').value.trim();
+
+    if (!name || !desc || !link) {
+      showMsg('courseMsg', 'error', 'Please fill in all fields.');
+      return;
+    }
+
+    const btn = document.getElementById('addCourseBtn');
+    btn.disabled = true;
+    btn.textContent = 'Adding…';
+
+    try {
+      const res = await fetch('/courses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, description: desc, link })
+      });
+      const saved = await res.json();
+
+      if (saved.id) {
+        document.getElementById('coName').value = '';
+        document.getElementById('coDesc').value = '';
+        document.getElementById('coLink').value = '';
+        showMsg('courseMsg', 'success', `✅ "${saved.name}" added!`);
+        loadCourses();
+      } else {
+        showMsg('courseMsg', 'error', 'Something went wrong. Try again.');
+      }
+    } catch (err) {
+      showMsg('courseMsg', 'error', 'Cannot reach server.');
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Add Course →';
+  }
+
+  async function deleteCourse(id) {
+    if (!confirm('Delete this course? This cannot be undone.')) return;
+
+    try {
+      await fetch(`/courses/${id}`, { method: 'DELETE' });
+      const row = document.getElementById('course-row-' + id);
+      if (row) row.remove();
+      loadCourses();
+    } catch (err) {
+      alert('Could not delete. Is the server running?');
+    }
+  }
+
+  // ─── LOAD EVERYTHING ON PAGE START ───────────────────────────
+  loadCompanies();
+  loadCourses();
+</script>
+</body>
+</html>
