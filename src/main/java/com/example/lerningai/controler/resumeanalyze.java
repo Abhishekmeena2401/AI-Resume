@@ -3,6 +3,7 @@ package com.example.lerningai.controler;
 
 import com.example.lerningai.entity.resumedata;
 import com.example.lerningai.repository.Resumerepo;
+import com.example.lerningai.service.EmailService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -20,6 +21,11 @@ import java.io.InputStream;
 @RestController
 @CrossOrigin(origins = "*")
 public class resumeanalyze {
+
+    // email sending
+    @Autowired
+    private EmailService emailService;
+    //
 
     @Autowired
     private Resumerepo repo;
@@ -64,8 +70,13 @@ public class resumeanalyze {
                 return "{\"error\": \"Could not extract text from the file.\"}";
             }
 
-            //  Call AI (already returns clean JSON now)
+            //""  Call AI ( returns clean JSON )
             String content = callCerebras.callCerebras(text);
+
+            // calling email sending funtiion
+            if (userEmail != null && !userEmail.isEmpty()) {
+                emailService.sendAIResponse(userEmail, userName, content);
+            }
 
             System.out.println("AI CONTENT: " + content);
 
@@ -99,7 +110,7 @@ public class resumeanalyze {
             resumeobj.setUserEmail(userEmail);
             resumeobj.setUserName(userName);
 //            resumeobj.setAtsScore(atsScore);
-  //          resumeobj.setScore(atsScore);   // ✅ ADD THIS LINE
+  //          resumeobj.setScore(atsScore);   //  ADD THIS LINE
 
             resumeobj.setPredictedJobRole(predictedJobRole);
             resumeobj.setTopSkills(topSkills);

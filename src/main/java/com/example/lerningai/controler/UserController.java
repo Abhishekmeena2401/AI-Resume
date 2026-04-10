@@ -45,7 +45,7 @@ public class UserController {
 
         Userdata user = userOpt.get();
 
-        // Simple password check (plain text - beginner friendly)
+        // Simple password check plain text
         if (!user.getPassword().equals(loginRequest.getPassword())) {
             return "{\"success\": false, \"message\": \"Wrong password.\"}";
         }

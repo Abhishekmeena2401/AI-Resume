@@ -112,16 +112,16 @@
 <nav>
   <a class="logo" href="index.html">Smart<span>place</span></a>
   <div class="nav-links">
-    <a href="index.html">📄 Resume</a>
-    <a href="company.html">🏢 Companies</a>
-    <a href="course.html" class="active">🎓 Courses</a>
+    <a href="index.html"> Resume</a>
+    <a href="company.html"> Companies</a>
+    <a href="course.html" class="active"> Courses</a>
     <button class="btn-logout" onclick="logout()">Logout</button>
   </div>
 </nav>
 
 <!-- ─── HERO ─── -->
 <div class="hero">
-  <div class="hero-tag">✦ Learn & Grow</div>
+  <div class="hero-tag"> Learn & Grow</div>
   <h1>Recommended <span>Courses</span></h1>
   <p>Handpicked learning resources to help you level up your career skills.</p>
 </div>
@@ -156,7 +156,7 @@
       const data = await res.json();   // array of course objects
 
       if (!data || data.length === 0) {
-        list.innerHTML = '<div class="state-msg">📚 No courses added yet. Check back soon!</div>';
+        list.innerHTML = '<div class="state-msg"> No courses added yet. Check back soon!</div>';
         return;
       }
 

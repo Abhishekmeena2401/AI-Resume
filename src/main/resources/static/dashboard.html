@@ -298,10 +298,19 @@
 <!-- ── NAVBAR ─────────────────────────────────────── -->
 <nav>
   <a class="logo" href="dashboard.html">Smart<span>place</span></a>
+
   <div class="nav-links">
-    <a href="company.html">🏢 Companies</a>
-    <a href="course.html">🎓 Courses</a>
-    <a href="login.html" class="btn-login-nav">Login / Register →</a>
+    <a href="company.html">Companies</a>
+    <a href="course.html">Courses</a>
+
+    <!-- Login/Register -->
+    <a href="login.html" id="loginLink" class="btn-login-nav">Login / Register →</a>
+
+    <!-- User Name (hidden initially) -->
+    <span id="userName" style="display:none;"></span>
+
+    <!-- Logout Button (hidden initially) -->
+    <button id="logoutBtn" style="display:none;" onclick="logout()">Logout</button>
   </div>
 </nav>
 
@@ -436,12 +445,31 @@
 </footer>
 
 <script>
-  // Scroll reveal animation
-  const observer = new IntersectionObserver(
-    entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
-    { threshold: 0.1 }
-  );
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+ if (user) {
+   // ✅ User is logged in
+
+   document.getElementById("loginBtn").style.display = "none";
+   document.getElementById("registerBtn").style.display = "none";
+
+   document.getElementById("userName").innerText = "Welcome " + user.name;
+
+ } else {
+   // ❌ Not logged in
+   document.getElementById("logoutBtn").style.display = "none";
+ }
+
+
+
+ // Scroll reveal animation
+ const observer = new IntersectionObserver(
+   entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+   { threshold: 0.1 }
+ );
+ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
 </body>
 </html>

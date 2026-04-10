@@ -215,8 +215,8 @@
 
   <!-- Tab Bar -->
   <div class="tab-bar">
-    <button class="tab active" onclick="switchTab('companies')">🏢 Companies</button>
-    <button class="tab"        onclick="switchTab('courses')">🎓 Courses</button>
+    <button class="tab active" onclick="switchTab('companies')"> Companies</button>
+    <button class="tab"        onclick="switchTab('courses')"> Courses</button>
   </div>
 
   <!-- ═══════════ COMPANIES PANEL ═══════════ -->
@@ -225,7 +225,7 @@
 
       <!-- ADD FORM -->
       <div class="form-card">
-        <h2>➕ Add Company</h2>
+        <h2> Add Company</h2>
 
         <label>Company Name</label>
         <input type="text" id="cName" placeholder="e.g. Google"/>
@@ -263,7 +263,7 @@
 
       <!-- ADD FORM -->
       <div class="form-card">
-        <h2>➕ Add Course</h2>
+        <h2> Add Course</h2>
 
         <label>Course Name</label>
         <input type="text" id="coName" placeholder="e.g. Java Full Stack"/>
@@ -295,6 +295,15 @@
 </div><!-- end .page -->
 
 <script>
+
+
+
+
+
+
+
+
+
   // ─── AUTH CHECK ───────────────────────────────────────────────
   const adminEmail = localStorage.getItem('adminEmail');
   if (!adminEmail) {
@@ -353,7 +362,7 @@
           <div class="item-body">
             <div class="item-name">${c.name}</div>
             <div class="item-meta">${c.description}</div>
-            <span class="item-badge">📦 ${c.packageOffered}</span>
+            <span class="item-badge"> ${c.packageOffered}</span>
             <a class="item-link" href="${c.applyLink}" target="_blank" rel="noopener">
               🔗 ${c.applyLink}
             </a>
@@ -396,7 +405,7 @@
         document.getElementById('cDesc').value = '';
         document.getElementById('cPkg').value  = '';
         document.getElementById('cLink').value = '';
-        showMsg('companyMsg', 'success', `✅ "${saved.name}" added!`);
+        showMsg('companyMsg', 'success', ` "${saved.name}" added!`);
         loadCompanies();   // Refresh list
       } else {
         showMsg('companyMsg', 'error', 'Something went wrong. Try again.');
@@ -485,7 +494,7 @@
         document.getElementById('coName').value = '';
         document.getElementById('coDesc').value = '';
         document.getElementById('coLink').value = '';
-        showMsg('courseMsg', 'success', `✅ "${saved.name}" added!`);
+        showMsg('courseMsg', 'success', ` "${saved.name}" added!`);
         loadCourses();
       } else {
         showMsg('courseMsg', 'error', 'Something went wrong. Try again.');
