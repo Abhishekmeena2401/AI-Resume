@@ -7,12 +7,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
-    
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #f8fafc; --surface: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
-      --accent: #3b82f6; --accent2: #06b6d4; --green: #16a34a; --yellow: #d97706;
-      --red: #dc2626; --text: #1e293b; --muted: #64748b; --radius: 14px;
+      --bg: #0b0f1a; --surface: #111827; --card: #151e2e; --border: #1f2d42;
+      --accent: #3b82f6; --accent2: #06b6d4; --green: #22c55e; --red: #ef4444;
+      --text: #e2e8f0; --muted: #64748b;
     }
     body {
       font-family: 'Sora', sans-serif; background: var(--bg); color: var(--text);
@@ -22,7 +21,7 @@
     body::before {
       content: ''; position: fixed; border-radius: 50%; filter: blur(80px);
       z-index: 0; pointer-events: none;
-      width: 400px; height: 400px; background: rgba(239,68,68,0.03); top: -80px; right: -80px;
+      width: 400px; height: 400px; background: rgba(239,68,68,0.05); top: -80px; right: -80px;
     }
 
     .logo {
