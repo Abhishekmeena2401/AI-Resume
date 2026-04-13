@@ -75,44 +75,15 @@ public class CerebrasAPIcall {
         HttpEntity<String> requestEntity = new HttpEntity<>(body, headers);
         RestTemplate restTemplate = new RestTemplate();
 
-//        try {
-//            ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
-//
-//            String responseBody = response.getBody();
-//
-//            //  STEP 1: Parse full API response
-//            JsonObject fullJson = JsonParser.parseString(responseBody).getAsJsonObject();
-//
-//            //  STEP 2: Extract only AI content
-//            String content = fullJson
-//                    .getAsJsonArray("choices")
-//                    .get(0).getAsJsonObject()
-//                    .getAsJsonObject("message")
-//                    .get("content")
-//                    .getAsString();
-//
-//            //  STEP 3: Clean content
-//            content = content.trim();
-//
-//            //  STEP 4: Extract only JSON part
-//            int start = content.indexOf("{");
-//            int end = content.lastIndexOf("}");
-//
-//            if (start != -1 && end != -1) {
-//                content = content.substring(start, end + 1);
-//            }
-//
-//            return content;
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return "{\"error\": \"AI response parsing failed\"}";
-//        }
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
+
             String responseBody = response.getBody();
 
+            //  STEP 1: Parse full API response
             JsonObject fullJson = JsonParser.parseString(responseBody).getAsJsonObject();
+
+            //  STEP 2: Extract only AI content
             String content = fullJson
                     .getAsJsonArray("choices")
                     .get(0).getAsJsonObject()
@@ -120,25 +91,22 @@ public class CerebrasAPIcall {
                     .get("content")
                     .getAsString();
 
-            // BETTER CLEANING: Find the first { and the last }
+            //  STEP 3: Clean content
+            content = content.trim();
+
+            //  STEP 4: Extract only JSON part
             int start = content.indexOf("{");
             int end = content.lastIndexOf("}");
 
             if (start != -1 && end != -1) {
-                return content.substring(start, end + 1);
-            } else {
-                // Fallback if the AI didn't return valid JSON structure
-                System.err.println("AI did not return valid JSON block. Content: " + content);
-                return "{\"error\": \"AI response was not in JSON format\"}";
+                content = content.substring(start, end + 1);
             }
 
+            return content;
+
         } catch (Exception e) {
-            System.err.println("Cerebras Call Error: " + e.getMessage());
-            return "{\"error\": \"AI service unavailable\"}";
+            e.printStackTrace();
+            return "{\"error\": \"AI response parsing failed\"}";
         }
-
-
-
-
     }
 }
