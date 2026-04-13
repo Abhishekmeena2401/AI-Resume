@@ -73,10 +73,7 @@ public class resumeanalyze {
             //""  Call AI ( returns clean JSON )
             String content = callCerebras.callCerebras(text);
 
-            // calling email sending funtiion
-            if (userEmail != null && !userEmail.isEmpty()) {
-                emailService.sendAIResponse(userEmail, userName, content);
-            }
+
 
             System.out.println("AI CONTENT: " + content);
 
