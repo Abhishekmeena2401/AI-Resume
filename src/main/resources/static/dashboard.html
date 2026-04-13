@@ -7,18 +7,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
+    
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg:      #0b0f1a;
-      --surface: #111827;
-      --card:    #151e2e;
-      --border:  #1f2d42;
-      --accent:  #3b82f6;
-      --accent2: #06b6d4;
-      --green:   #22c55e;
-      --text:    #e2e8f0;
-      --muted:   #64748b;
+      --bg: #f8fafc; --surface: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
+      --accent: #3b82f6; --accent2: #06b6d4; --green: #16a34a; --yellow: #d97706;
+      --red: #dc2626; --text: #1e293b; --muted: #64748b; --radius: 14px;
     }
 
     html { scroll-behavior: smooth; }
@@ -39,9 +33,9 @@
       pointer-events: none;
       z-index: 0;
     }
-    .orb-1 { width: 600px; height: 600px; background: rgba(59,130,246,0.08);  top: -200px; left: -200px; }
-    .orb-2 { width: 400px; height: 400px; background: rgba(6,182,212,0.06);   bottom: -100px; right: -100px; }
-    .orb-3 { width: 300px; height: 300px; background: rgba(34,197,94,0.04);   top: 40%; left: 60%; }
+    .orb-1 { width: 600px; height: 600px; background: rgba(59,130,246,0.05);  top: -200px; left: -200px; }
+    .orb-2 { width: 400px; height: 400px; background: rgba(6,182,212,0.04);   bottom: -100px; right: -100px; }
+    .orb-3 { width: 300px; height: 300px; background: rgba(34,197,94,0.03);   top: 40%; left: 60%; }
 
     /* ── NAVBAR ── */
     nav {
@@ -49,7 +43,7 @@
       display: flex; align-items: center; justify-content: space-between;
       padding: 18px 48px;
       border-bottom: 1px solid var(--border);
-      background: rgba(11,15,26,0.85);
+      background: rgba(248,250,252,0.95);
       backdrop-filter: blur(16px);
     }
     .logo {
@@ -65,7 +59,7 @@
       color: var(--muted); text-decoration: none; font-size: 0.88rem; font-weight: 500;
       padding: 7px 16px; border-radius: 8px; transition: all 0.2s;
     }
-    .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+    .nav-links a:hover { color: var(--text); background: rgba(0,0,0,0.03); }
 
     .btn-login-nav {
       background: linear-gradient(135deg, var(--accent), var(--accent2));
@@ -85,7 +79,7 @@
 
     .hero-badge {
       display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(59,130,246,0.08);
+      background: rgba(59,130,246,0.05);
       border: 1px solid rgba(59,130,246,0.25);
       color: var(--accent); font-size: 0.75rem; font-weight: 600;
       letter-spacing: 1.5px; text-transform: uppercase;
@@ -188,13 +182,13 @@
 
     /* individual card accent colors */
     .card-resume { --card-accent: #3b82f6; }
-    .card-resume::before { background: radial-gradient(circle at 0% 0%, rgba(59,130,246,0.08), transparent 70%); }
+    .card-resume::before { background: radial-gradient(circle at 0% 0%, rgba(59,130,246,0.06), transparent 70%); }
 
     .card-company { --card-accent: #06b6d4; }
-    .card-company::before { background: radial-gradient(circle at 0% 0%, rgba(6,182,212,0.08), transparent 70%); }
+    .card-company::before { background: radial-gradient(circle at 0% 0%, rgba(6,182,212,0.06), transparent 70%); }
 
     .card-courses { --card-accent: #22c55e; }
-    .card-courses::before { background: radial-gradient(circle at 0% 0%, rgba(34,197,94,0.08), transparent 70%); }
+    .card-courses::before { background: radial-gradient(circle at 0% 0%, rgba(34,197,94,0.06), transparent 70%); }
 
     .card-icon {
       width: 52px; height: 52px; border-radius: 13px;
@@ -230,7 +224,7 @@
     }
     .step-num {
       font-size: 2.5rem; font-weight: 800; font-family: 'JetBrains Mono', monospace;
-      color: var(--border); line-height: 1; margin-bottom: 12px;
+      color: #cbd5e1; line-height: 1; margin-bottom: 12px;
     }
     .step h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
     .step p  { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
@@ -241,7 +235,7 @@
       max-width: 1100px; margin: 0 auto 80px; padding: 0 24px;
     }
     .cta-inner {
-      background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(6,182,212,0.08));
+      background: linear-gradient(135deg, rgba(59,130,246,0.06), rgba(6,182,212,0.04));
       border: 1px solid rgba(59,130,246,0.25);
       border-radius: 20px; padding: 52px 40px;
       text-align: center;
