@@ -8,21 +8,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
     /* ─── RESET & BASE ────────────────────────────────── */
+    
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg:        #0b0f1a;
-      --surface:   #111827;
-      --card:      #151e2e;
-      --border:    #1f2d42;
-      --accent:    #3b82f6;
-      --accent2:   #06b6d4;
-      --green:     #22c55e;
-      --yellow:    #f59e0b;
-      --red:       #ef4444;
-      --text:      #e2e8f0;
-      --muted:     #64748b;
-      --radius:    14px;
+      --bg: #f8fafc; --surface: #f1f5f9; --card: #ffffff; --border: #e2e8f0;
+      --accent: #3b82f6; --accent2: #06b6d4; --green: #16a34a; --yellow: #d97706;
+      --red: #dc2626; --text: #1e293b; --muted: #64748b; --radius: 14px;
     }
 
     body {
@@ -39,7 +30,7 @@
       justify-content: space-between;
       padding: 18px 40px;
       border-bottom: 1px solid var(--border);
-      background: rgba(11,15,26,0.9);
+      background: rgba(248,250,252,0.95);
       backdrop-filter: blur(12px);
       position: sticky;
       top: 0;
@@ -76,7 +67,7 @@
     }
     .nav-links-pages a:hover {
       color: var(--text);
-      background: rgba(255,255,255,0.05);
+      background: rgba(0,0,0,0.03);
     }
     .nav-divider {
       width: 1px; height: 20px;
@@ -341,7 +332,7 @@
 
     /* Course cards */
     .course-item {
-      background: rgba(255,255,255,0.02);
+      background: rgba(0,0,0,0.03);
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 14px 16px;
