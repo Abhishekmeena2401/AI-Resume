@@ -15,6 +15,8 @@ public class Admindata {
 
     private String password;
 
+
+
     // ---------- Getters ----------
     public Long getId()             { return id; }
     public String getEmail()        { return email; }

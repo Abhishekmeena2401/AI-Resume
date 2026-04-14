@@ -17,6 +17,8 @@ public class Userdata {
 
     private String password;
 
+
+
     // ---------- Getters ----------
     public Long getId()       { return id; }
     public String getName()   { return name; }

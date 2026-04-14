@@ -19,6 +19,7 @@ public class companydata {
 
     private String applyLink;        // URL to apply
 
+
     // ---------- Getters ----------
     public Long getId()                { return id; }
     public String getName()            { return name; }

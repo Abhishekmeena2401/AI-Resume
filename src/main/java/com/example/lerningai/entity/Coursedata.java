@@ -17,6 +17,8 @@ public class Coursedata {
 
     private String link;   // URL to the course
 
+
+
     // ---------- Getters ----------
     public Long getId()             { return id; }
     public String getName()         { return name; }
