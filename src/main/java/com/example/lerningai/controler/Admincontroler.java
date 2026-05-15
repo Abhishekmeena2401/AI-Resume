@@ -37,6 +37,11 @@ public class Admincontroler {
     }
 }
 
+
+
+
+
+
 // ─── HOW ADMIN CRUD WORKS ─────────────────────────────────────────
 // Admin uses the same /companies and /courses endpoints (POST, DELETE)
 // that are already defined in companycontroler and Coursecontroler.

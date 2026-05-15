@@ -1,9 +1,11 @@
 
 package com.example.lerningai.controler;
 
+import com.example.lerningai.entity.Userdata;
 import com.example.lerningai.entity.resumedata;
 import com.example.lerningai.repository.Resumerepo;
 
+import com.example.lerningai.repository.UserRepo;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -22,6 +24,8 @@ import java.io.InputStream;
 @CrossOrigin(origins = "*")
 public class resumeanalyze {
 
+    @Autowired
+    private UserRepo userRepo;
 
     @Autowired
     private Resumerepo repo;
@@ -74,26 +78,32 @@ public class resumeanalyze {
                 content = content.replaceAll("```json", "").replaceAll("```", "").trim();
             }
 
+            try {
+                // Parse JSON
+                JsonObject data = JsonParser.parseString(content).getAsJsonObject();
+                // Extract fields
+                int atsScore = 0;
+                if (data.has("atsScore")) { atsScore = data.get("atsScore").getAsInt(); }
 
-            // Parse JSON
-            JsonObject data = JsonParser.parseString(content).getAsJsonObject();
+                String overallFeedback = data.has("overallFeedback") ? data.get("overallFeedback").getAsString() : "";
 
-            // Extract ONLY required fields
-            int atsScore = data.has("atsScore") ? data.get("atsScore").getAsInt() : 0;
-            String overallFeedback = data.has("overallFeedback") ? data.get("overallFeedback").getAsString() : "";
+                resumedata resumeobj = new resumedata();
+                Userdata user = userRepo.findByEmail(userEmail)
+                        .orElseThrow(() -> new RuntimeException("User not found"));
 
-           // Save minimal data
-            resumedata resumeobj = new resumedata();
-            resumeobj.setUserEmail(userEmail);
-            resumeobj.setUserName(userName);
-            resumeobj.setAtsScore(atsScore);
-            resumeobj.setOverallFeedback(overallFeedback);
+                resumeobj.setUserId(user.getId());
+                resumeobj.setAtsScore(atsScore);
+                resumeobj.setOverallFeedback(overallFeedback);
+                repo.save(resumeobj);
 
-            repo.save(resumeobj);
+                return content;
 
-            // Return full JSON to frontend (unchanged)
+            } catch (Exception jsonEx) {
+                System.err.println("JSON Parsing Error. Raw Content: " + content);
+                return "{\"error\": \"AI generated an invalid response format. Please try again.\"}";
+            }
 
-            return content;
+
 
         } catch (Exception e) {
             e.printStackTrace();

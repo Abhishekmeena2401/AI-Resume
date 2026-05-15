@@ -86,17 +86,17 @@ import java.time.LocalDateTime;
 @Table(name = "resume_data")
 public class resumedata {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String userEmail;
-
-    private String userName;
+    //  FK
+    private Long userId;
 
     private int atsScore;
 
-    @Column(columnDefinition = "TEXT") // ✅ no length limit issue
+    @Column(columnDefinition = "TEXT")
     private String overallFeedback;
 
     @CreationTimestamp
@@ -104,16 +104,14 @@ public class resumedata {
 
     // ---------- Getters ----------
     public Long getId() { return id; }
-    public String getUserEmail() { return userEmail; }
-    public String getUserName() { return userName; }
+    public Long getUserId() { return userId; }
     public int getAtsScore() { return atsScore; }
     public String getOverallFeedback() { return overallFeedback; }
     public LocalDateTime getAnalyzedAt() { return analyzedAt; }
 
     // ---------- Setters ----------
     public void setId(Long id) { this.id = id; }
-    public void setUserEmail(String userEmail) { this.userEmail = userEmail; }
-    public void setUserName(String userName) { this.userName = userName; }
+    public void setUserId(Long userId) { this.userId = userId; }
     public void setAtsScore(int atsScore) { this.atsScore = atsScore; }
     public void setOverallFeedback(String overallFeedback) { this.overallFeedback = overallFeedback; }
     public void setAnalyzedAt(LocalDateTime analyzedAt) { this.analyzedAt = analyzedAt; }
